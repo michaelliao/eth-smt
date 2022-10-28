@@ -67,12 +67,21 @@ public class LeafNode extends Node {
         return this.dataHash;
     }
 
+    /**
+     * Get data of leaf node.
+     * 
+     * @return Binary data.
+     */
     public byte[] getDataValue() {
         return this.dataValue;
     }
 
     /**
      * Update leaf node's number, data value and data hash.
+     * 
+     * @param number    Version.
+     * @param topLevel  Top level.
+     * @param dataValue Binary data.
      */
     public void update(long number, int topLevel, byte[] dataValue) {
         this.number = number;

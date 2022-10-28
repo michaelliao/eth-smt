@@ -43,6 +43,9 @@ public abstract class Node {
 
     /**
      * For debug only.
+     * 
+     * @param indent Indent space.
+     * @param isLast Is last node.
      */
     public abstract void print(int indent, boolean[] isLast);
 }

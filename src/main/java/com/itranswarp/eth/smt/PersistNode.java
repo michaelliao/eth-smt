@@ -9,6 +9,9 @@ public record PersistNode(long number, boolean leaf, NibbleString topPath, Nibbl
 
     /**
      * Serialize a node.
+     * 
+     * @param node Node.
+     * @return Persist node.
      */
     public static PersistNode serialize(Node node) {
         boolean isLeaf = node instanceof LeafNode;
@@ -37,6 +40,8 @@ public record PersistNode(long number, boolean leaf, NibbleString topPath, Nibbl
 
     /**
      * Deserialize a node.
+     * 
+     * @return Node.
      */
     public Node deserialize() {
         boolean isLeaf = this.path.length() == 40;
@@ -54,9 +59,6 @@ public record PersistNode(long number, boolean leaf, NibbleString topPath, Nibbl
         }
     }
 
-    /**
-     * toString() implementation.
-     */
     @Override
     public String toString() {
         String data = "null";

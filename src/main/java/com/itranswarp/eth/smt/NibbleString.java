@@ -62,7 +62,7 @@ public final class NibbleString {
      * byte[] {0x2f, 0x3c}" -> NibbleString { 2, 0xf, 3, 0xc }
      * </code>
      * 
-     * @param hexString The hex string.
+     * @param original The byte array.
      */
     public NibbleString(byte[] original) {
         if (original.length == 0) {
@@ -86,6 +86,9 @@ public final class NibbleString {
 
     /**
      * Append a nibble.
+     * 
+     * @param next Next nibble path.
+     * @return Nibble string.
      */
     public NibbleString join(int next) {
         if (next < 0 || next > 15) {
@@ -105,6 +108,9 @@ public final class NibbleString {
 
     /**
      * Substring from beginIndex.
+     * 
+     * @param beginIndex Begin index.
+     * @return Nibble string.
      */
     public NibbleString substring(int beginIndex) {
         return substring(beginIndex, this.count);
@@ -112,6 +118,10 @@ public final class NibbleString {
 
     /**
      * Substring from beginIndex and endIndex (exclusive).
+     * 
+     * @param beginIndex Begin index.
+     * @param endIndex   End index.
+     * @return Nibble string.
      */
     public NibbleString substring(int beginIndex, int endIndex) {
         if (beginIndex == 0 && endIndex == this.count) {
@@ -123,6 +133,8 @@ public final class NibbleString {
 
     /**
      * Length of this nibble string.
+     * 
+     * @return Length of nibble string.
      */
     public int length() {
         return this.count;
@@ -130,15 +142,15 @@ public final class NibbleString {
 
     /**
      * Nibble value at index.
+     * 
+     * @param index Index.
+     * @return Nibble value.
      */
     public int valueAt(int index) {
         Objects.checkIndex(index, this.count);
         return this.value[this.offset + index];
     }
 
-    /**
-     * equals() implementation.
-     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -151,9 +163,6 @@ public final class NibbleString {
         return false;
     }
 
-    /**
-     * hashCode() implementation.
-     */
     @Override
     public int hashCode() {
         int h = this.hash;
@@ -168,9 +177,6 @@ public final class NibbleString {
         return h;
     }
 
-    /**
-     * toString() implementation.
-     */
     @Override
     public String toString() {
         if (this.count == 0) {
@@ -186,6 +192,8 @@ public final class NibbleString {
 
     /**
      * Is empty nibble string.
+     * 
+     * @return True if empty.
      */
     public boolean isEmpty() {
         return this.count == 0;
@@ -234,6 +242,10 @@ public final class NibbleString {
     /**
      * Get shared prefix as many as possible. Example: "1a2b3c" and "1a2f4d" share
      * "1a2".
+     * 
+     * @param s1 A nibble string.
+     * @param s2 Another nibble string.
+     * @return Share prefix.
      */
     public static NibbleString sharedPrefix(NibbleString s1, NibbleString s2) {
         int max = Math.min(s1.length(), s2.length());

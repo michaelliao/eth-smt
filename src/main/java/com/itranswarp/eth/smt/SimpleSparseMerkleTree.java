@@ -14,8 +14,8 @@ public class SimpleSparseMerkleTree {
     /**
      * Update an address with binary data.
      * 
-     * @param address
-     * @param dataValue
+     * @param address   Address.
+     * @param dataValue Binary value.
      */
     public void update(String address, byte[] dataValue) {
         BigInteger index = new BigInteger(address.substring(2), 16);
@@ -24,9 +24,9 @@ public class SimpleSparseMerkleTree {
     }
 
     /**
-     * Update root hash.
+     * Calculate root hash.
      * 
-     * @return
+     * @return Root hash.
      */
     public byte[] calculateMerkleRoot() {
         if (this.leafs.isEmpty()) {

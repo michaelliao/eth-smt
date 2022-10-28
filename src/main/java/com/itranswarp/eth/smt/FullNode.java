@@ -59,6 +59,12 @@ public class FullNode extends Node {
         this.childrenLoaded = new boolean[16];
     }
 
+    /**
+     * Update top level with number.
+     * 
+     * @param number   Version.
+     * @param topLevel Top level.
+     */
     public void updateTopLevel(long number, int topLevel) {
         assert topLevel <= this.nodeLevel;
         this.number = number;
@@ -91,6 +97,15 @@ public class FullNode extends Node {
         return topHash;
     }
 
+    /**
+     * Update nodes.
+     * 
+     * @param collector     List container for node.
+     * @param store         Tree store.
+     * @param currentNumber Current version.
+     * @param address       Address.
+     * @param dataValue     Binary value.
+     */
     public void update(final List<Node> collector, final TreeStore store, final long currentNumber, final NibbleString address, final byte[] dataValue) {
         this.number = currentNumber;
         NibbleString prefix = NibbleString.sharedPrefix(this.nodePath, address);

@@ -21,6 +21,9 @@ public class PersistSparseMerkleTree {
 
     /**
      * Construct a sparse-merkle-tree.
+     * 
+     * @param store    Tree store.
+     * @param rootHash Root hash.
      */
     public PersistSparseMerkleTree(TreeStore store, byte[] rootHash) {
         this.store = store;
@@ -35,7 +38,7 @@ public class PersistSparseMerkleTree {
     /**
      * Get root hash.
      * 
-     * @return
+     * @return Root hash.
      */
     public byte[] getMerkleRoot() {
         return this.root.getTopHash();
@@ -44,16 +47,16 @@ public class PersistSparseMerkleTree {
     /**
      * Get root node.
      * 
-     * @return
+     * @return Root node.
      */
     public Node getRootNode() {
         return this.root;
     }
 
     /**
-     * Get number.
+     * Get number as version.
      * 
-     * @return
+     * @return Root version.
      */
     public long getNumber() {
         return this.root.getNumber();
@@ -84,8 +87,8 @@ public class PersistSparseMerkleTree {
     /**
      * Update address with binary data.
      * 
-     * @param address
-     * @param dataValue
+     * @param address   Address.
+     * @param dataValue Binary data.
      */
     public void update(byte[] address, byte[] dataValue) {
         long number = getNumber() + 1;
