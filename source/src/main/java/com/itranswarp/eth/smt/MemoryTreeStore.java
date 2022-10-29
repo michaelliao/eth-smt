@@ -27,12 +27,17 @@ import java.util.Objects;
  * 
  * Primary key: number, path and topHash.
  */
-class MemoryTreeStore implements TreeStore {
+public class MemoryTreeStore implements TreeStore {
 
     Map<NibbleString, List<PersistNode>> topPathMap = new HashMap<>();
     Map<String, PersistNode> rootMap = new HashMap<>();
     Map<NumberAndAddress, byte[]> leafMap = new HashMap<>();
 
+    /**
+     * Make a copy of memory tree store.
+     * 
+     * @return Copy of memory tree store.
+     */
     public MemoryTreeStore copy() {
         MemoryTreeStore copy = new MemoryTreeStore();
         copy.rootMap.putAll(this.rootMap);
@@ -84,6 +89,9 @@ class MemoryTreeStore implements TreeStore {
         }
     }
 
+    /**
+     * For debug.
+     */
     public void print() {
         System.out.println("---- Begin Tree Store ----");
         for (NibbleString key : this.topPathMap.keySet()) {

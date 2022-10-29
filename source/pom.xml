@@ -3,7 +3,7 @@
 
 	<groupId>com.itranswarp</groupId>
 	<artifactId>eth-smt</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 	<packaging>jar</packaging>
 
 	<name>Ethereum Sparse Merkle Tree</name>
