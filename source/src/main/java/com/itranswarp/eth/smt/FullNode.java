@@ -181,7 +181,6 @@ public class FullNode extends Node {
             NibbleString childPath = this.nodePath.join(childIndex);
             Node loadedNode = store.load(childPath, currentNumber);
             if (loadedNode != null) {
-                System.out.println("loaded node: " + loadedNode);
                 child = loadedNode;
                 this.children[childIndex] = child;
             }

@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Memory tree store used for test.
  * 
@@ -28,6 +31,8 @@ import java.util.Objects;
  * Primary key: number, path and topHash.
  */
 public class MemoryTreeStore implements TreeStore {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     Map<NibbleString, List<PersistNode>> topPathMap = new HashMap<>();
     Map<String, PersistNode> rootMap = new HashMap<>();
@@ -57,12 +62,16 @@ public class MemoryTreeStore implements TreeStore {
         if (pnodes != null) {
             for (PersistNode pnode : pnodes) {
                 if (pnode.number() < currentNumber) {
-                    System.out.println("loaded node: " + topPath + " from store at: " + currentNumber);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("loaded node {} from store at {}", topPath, currentNumber);
+                    }
                     return pnode.deserialize();
                 }
             }
         }
-        System.out.println("loaded null node: " + topPath + " from store at: " + currentNumber);
+        if (logger.isDebugEnabled()) {
+            logger.debug("loaded NULL node {} from store at {}", topPath, currentNumber);
+        }
         return null;
     }
 
@@ -105,7 +114,9 @@ public class MemoryTreeStore implements TreeStore {
     }
 
     private void addTopPathMap(NibbleString topPath, PersistNode pnode) {
-        System.out.println("add top path: " + topPath + " = " + pnode);
+        if (logger.isDebugEnabled()) {
+            logger.debug("add top path: {} = {}", topPath, pnode);
+        }
         List<PersistNode> pnodes = topPathMap.get(topPath);
         if (pnodes == null) {
             pnodes = new ArrayList<>();

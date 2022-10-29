@@ -3,21 +3,18 @@ package com.itranswarp.eth.smt;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A persist sparse merkle tree.
  */
 public class PersistSparseMerkleTree {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     private final TreeStore store;
     private final FullNode root;
-
-    static void check(PersistSparseMerkleTree smt, SimpleSparseMerkleTree vsmt) {
-        smt.print();
-        String expected = SmtUtils.toHexString(vsmt.calculateMerkleRoot());
-        String actual = SmtUtils.toHexString(smt.getMerkleRoot());
-        boolean ok = expected.equals(actual);
-        System.out.println((ok ? "[OK]" : "[FAILED]") + " expected = " + expected + ", actual = " + actual);
-    }
 
     /**
      * Construct a sparse-merkle-tree.
@@ -30,8 +27,14 @@ public class PersistSparseMerkleTree {
         if (rootHash == null) {
             this.root = new FullNode(0, NibbleString.EMPTY, 0);
             this.store.save(List.of(PersistNode.serialize(this.root)));
+            if (logger.isDebugEnabled()) {
+                logger.debug("init empty tree: {}", SmtUtils.toHexString(this.getMerkleRoot()));
+            }
         } else {
             this.root = (FullNode) this.store.loadRoot(rootHash);
+            if (logger.isDebugEnabled()) {
+                logger.debug("init tree with root: {}", SmtUtils.toHexString(rootHash));
+            }
         }
     }
 
