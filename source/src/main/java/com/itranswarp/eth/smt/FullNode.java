@@ -98,6 +98,26 @@ public class FullNode extends Node {
     }
 
     /**
+     * Get leaf node, or null if not found.
+     * 
+     * @param store         Tree store.
+     * @param currentNumber Current version.
+     * @param address       Address.
+     * @return Leaf node, or null if not found.
+     */
+    public LeafNode getLeaf(final TreeStore store, final long currentNumber, final NibbleString address) {
+        int childIndex = address.valueAt(this.nodeLevel);
+        Node child = loadChild(store, currentNumber, childIndex);
+        if (child == null) {
+            return null; // no such leaf
+        }
+        if (child instanceof FullNode) {
+            return ((FullNode) child).getLeaf(store, currentNumber, address);
+        }
+        return (LeafNode) child;
+    }
+
+    /**
      * Update nodes.
      * 
      * @param collector     List container for node.

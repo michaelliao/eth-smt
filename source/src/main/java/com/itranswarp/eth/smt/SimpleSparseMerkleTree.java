@@ -9,7 +9,22 @@ import java.util.Map;
  */
 public class SimpleSparseMerkleTree {
 
-    private Map<BigInteger, byte[]> leafs = new HashMap<>(100000);
+    private Map<BigInteger, LeafData> leafs = new HashMap<>(100000);
+
+    /**
+     * Get leaf data by address, or empty bytes if no data.
+     * 
+     * @param address Address.
+     * @return Bytes array. Empty if no data.
+     */
+    public byte[] getLeafData(String address) {
+        BigInteger index = new BigInteger(address.substring(2), 16);
+        LeafData leaf = leafs.get(index);
+        if (leaf == null) {
+            return SmtUtils.EMPTY_DATA;
+        }
+        return leaf.data;
+    }
 
     /**
      * Update an address with binary data.
@@ -19,8 +34,7 @@ public class SimpleSparseMerkleTree {
      */
     public void update(String address, byte[] dataValue) {
         BigInteger index = new BigInteger(address.substring(2), 16);
-        byte[] hash = SmtUtils.keccak(dataValue);
-        leafs.put(index, hash);
+        leafs.put(index, new LeafData(dataValue));
     }
 
     /**
@@ -32,7 +46,10 @@ public class SimpleSparseMerkleTree {
         if (this.leafs.isEmpty()) {
             return TreeInfo.getDefaultHash(0);
         }
-        Map<BigInteger, byte[]> results = new HashMap<>(this.leafs);
+        Map<BigInteger, byte[]> results = new HashMap<>(this.leafs.size());
+        for (BigInteger key : this.leafs.keySet()) {
+            results.put(key, this.leafs.get(key).hash);
+        }
         for (int i = 160; i > 0; i--) {
             Map<BigInteger, byte[]> tops = new HashMap<>(results.size() / 2);
             for (BigInteger index : results.keySet()) {
@@ -62,5 +79,20 @@ public class SimpleSparseMerkleTree {
             results = tops;
         }
         return results.get(BigInteger.ZERO);
+    }
+}
+
+class LeafData {
+
+    byte[] hash;
+    byte[] data;
+
+    LeafData(byte[] data) {
+        setData(data);
+    }
+
+    void setData(byte[] data) {
+        this.data = data;
+        this.hash = SmtUtils.keccak(data);
     }
 }

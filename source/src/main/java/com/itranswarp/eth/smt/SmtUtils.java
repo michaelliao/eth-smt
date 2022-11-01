@@ -7,6 +7,8 @@ import org.bouncycastle.jcajce.provider.digest.Keccak;
 
 class SmtUtils {
 
+    public static final byte[] EMPTY_DATA = new byte[0];
+
     private static final Pattern ADDR = Pattern.compile("^0x[a-f0-9]{40}$");
 
     public static boolean isValidAddress(String address) {

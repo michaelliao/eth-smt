@@ -30,6 +30,8 @@ public class PersistSparseMerkleTreeTest {
     byte[] data6 = "Kl".repeat(16).getBytes();
     byte[] data7 = "Mn".repeat(16).getBytes();
     byte[] data8 = "Op".repeat(16).getBytes();
+    byte[] dataX = "Xx".repeat(16).getBytes();
+    byte[] dataY = "Yy".repeat(16).getBytes();
 
     byte[][] data = { data1, data2, data3, data4, data5, data6, data7, data8 };
 
@@ -154,6 +156,43 @@ public class PersistSparseMerkleTreeTest {
         }
         verify(psmt, ssmt);
         psmt.print();
+    }
+
+    @Test
+    void getLeafs() {
+        var store = new MemoryTreeStore();
+        var psmt = new PersistSparseMerkleTree(store, null);
+        var ssmt = new SimpleSparseMerkleTree();
+        update(psmt, ssmt, address5, data5);
+        update(psmt, ssmt, address6, data6);
+        update(psmt, ssmt, address7, data7);
+        assertArrayEquals(data5, psmt.getLeafData(address5));
+        assertArrayEquals(data6, psmt.getLeafData(address6));
+        assertArrayEquals(data7, psmt.getLeafData(address7));
+        verify(psmt, ssmt);
+        // make a copy:
+        var snapshot1Copy = store.copy();
+        var snapshot1Root = psmt.getMerkleRoot();
+
+        // continue update 5, 6:
+        update(psmt, ssmt, address5, dataX);
+        update(psmt, ssmt, address6, dataY);
+
+        // make a copy:
+        var snapshot2Copy = store.copy();
+        var snapshot2Root = psmt.getMerkleRoot();
+
+        // check snapshot 1:
+        var snapshot1 = new PersistSparseMerkleTree(snapshot1Copy, snapshot1Root);
+        assertArrayEquals(data5, snapshot1.getLeafData(address5));
+        assertArrayEquals(data6, snapshot1.getLeafData(address6));
+        assertArrayEquals(data7, snapshot1.getLeafData(address7));
+
+        // check snapshot 2:
+        var snapshot2 = new PersistSparseMerkleTree(snapshot2Copy, snapshot2Root);
+        assertArrayEquals(dataX, snapshot2.getLeafData(address5));
+        assertArrayEquals(dataY, snapshot2.getLeafData(address6));
+        assertArrayEquals(data7, snapshot2.getLeafData(address7));
     }
 
     @Test

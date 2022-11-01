@@ -66,6 +66,27 @@ public class PersistSparseMerkleTree {
     }
 
     /**
+     * Get leaf data by address.
+     * 
+     * @param address Address.
+     * @return Binary data.
+     */
+    public byte[] getLeafData(String address) {
+        return getLeafData(SmtUtils.fromHexString(address.substring(2)));
+    }
+
+    /**
+     * Get leaf data by address.
+     * 
+     * @param address Address.
+     * @return Binary data.
+     */
+    public byte[] getLeafData(byte[] address) {
+        LeafNode leaf = this.root.getLeaf(this.store, this.root.number, SmtUtils.addressToPath(address));
+        return leaf == null ? SmtUtils.EMPTY_DATA : leaf.dataValue;
+    }
+
+    /**
      * Update single address.
      * 
      * @param address   Ethereum address like 0x1234...abcd. All lowercase.

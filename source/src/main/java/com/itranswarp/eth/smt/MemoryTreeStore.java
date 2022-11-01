@@ -61,7 +61,7 @@ public class MemoryTreeStore implements TreeStore {
         List<PersistNode> pnodes = topPathMap.get(topPath);
         if (pnodes != null) {
             for (PersistNode pnode : pnodes) {
-                if (pnode.number() < currentNumber) {
+                if (pnode.number() <= currentNumber) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("loaded node {} from store at {}", topPath, currentNumber);
                     }
