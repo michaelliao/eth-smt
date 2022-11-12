@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import com.itranswarp.eth.smt.MemoryTreeStore;
 import com.itranswarp.eth.smt.PersistSparseMerkleTree;
 
-public class Main {
+public class State {
 
     public static void main(String[] args) {
         String address1 = "0x1234567890123456789012345678901234567890"; // ends with 0
