@@ -28,6 +28,8 @@ public class Proof {
     public static void main(String[] args) {
         ch.qos.logback.classic.Logger logger = (Logger) LoggerFactory.getLogger("com.itranswarp.eth.smt");
         logger.setLevel(Level.WARN);
+
+        // 用户ID -> 资产余额:
         Map<Long, BigDecimal> userAssets = Map.of( //
                 12345L, new BigDecimal("12.34"), //
                 23456L, new BigDecimal("23.45"), //
@@ -35,19 +37,25 @@ public class Proof {
                 45678L, new BigDecimal("45.67"), //
                 56789L, new BigDecimal("567.89")); //
 
+        String snapshotTime = "2022-11-14T09:19:20";
+
         var store = new MemoryTreeStore();
         var psmt = new PersistSparseMerkleTree(store, null);
         List<LeafItem> leafs = new ArrayList<>();
+        // 计算总额:
         BigDecimal total = BigDecimal.ZERO;
-        String snapshotTime = "2022-11-14T09:19:20";
+
+        // 用户ID排序:
         List<Long> keys = new ArrayList<>(userAssets.keySet());
         Collections.sort(keys);
         for (Long userId : keys) {
             BigDecimal balance = userAssets.get(userId);
             String secretKey = "random-" + userId + snapshotTime;
+            // 添加到证明:
             putUserAsset(psmt, leafs, userId, secretKey, balance);
             total = total.add(balance);
         }
+        // 生成CSV:
         System.out.println("-- generated merkle proof --");
         leafs.sort((l1, l2) -> l1.address.compareTo(l2.address));
         System.out.printf("address, balance\n");
@@ -60,18 +68,21 @@ public class Proof {
 
     private static void putUserAsset(PersistSparseMerkleTree merkle, List<LeafItem> leafs, Long userId, String secretKey, BigDecimal balance) {
         System.out.printf("add user asset: %d = %s\n", userId, balance.toPlainString());
+        // 用户ID+随机数 -> 确定性地址:
         byte[] address = userHash(userId, secretKey);
+        // 随机分割用户资产为若干份:
         List<BigDecimal> parts = randomSplit(balance);
         for (BigDecimal part : parts) {
             LeafItem leaf = new LeafItem(HexFormat.of().formatHex(address), part.toPlainString());
             System.out.printf("  set %s: %s\n", leaf.address, leaf.balance);
             merkle.update(address, leaf.balance.getBytes());
-            balance = balance.subtract(part);
+            // 下一个确定性地址:
             address = nextAddress(address, secretKey);
             leafs.add(leaf);
         }
     }
 
+    // 按不同资产规模分割为N份:
     private static List<BigDecimal> randomSplit(BigDecimal balance) {
         List<BigDecimal> list = new ArrayList<>();
         int split = 0;
